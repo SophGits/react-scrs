@@ -9,11 +9,43 @@ var SocialCountResults = React.createClass({
   handleChange: function( event ) {
     this.setState({ uri: event.target.value });
   },
-  foo: function (f) {
-    console.log("something: ", f);
+  foo: function (index, f) {
+    console.log("something: ", index, f);
+
+    var currentArray = this.state.dataArray;
+    currentArray[index].url = f;
+// debugger
+    this.setState({ dataArray: currentArray });
+    this.getDataFromExistingRecord(index, f);
+
+    console.log(this.state.dataArray);
+    // do setState instead
+    // but you have to make the array, change the stuff, then setState it all
+  },
+  getDataFromExistingRecord: function( index, uri) {
+   $.ajax({
+      url: 'https://cors-anywhere.herokuapp.com/zorg.builtvisible.com/tools/scrs/json',
+      data: {
+        'api_key': '65b608cf38b638ea71cf4c9baad182ae',
+        'url': uri
+      },
+      success: function( data ) {
+        console.log( "results: ", data );
+        var orig = this.state.dataArray;
+        orig[index] = data;
+        this.setState({ dataArray: orig })
+        // debugger
+        this.render();
+      }.bind(this),
+      error: function( xhr, status, error) {
+        console.error(status, error.toString());
+        return error;
+      }.bind(this)
+    });
+
   },
   getData: function(e) {
-    e.preventDefault();
+    if (e) { e.preventDefault();}
 
     $.ajax({
        url: 'https://cors-anywhere.herokuapp.com/zorg.builtvisible.com/tools/scrs/json',
@@ -47,7 +79,7 @@ var SocialCountResults = React.createClass({
             <button className="btn" onClick={this.getData}>Go</button>
           </td>
           <td className="fb">1</td>
-          <td className="twitter">2 + {this.state.twitter}</td>
+          <td className="twitter">{this.state.twitter}</td>
           <td className="linkedin">3</td>
         </tr>
       </tbody>
@@ -77,11 +109,21 @@ var ResultsList = React.createClass({
 // render the individual results in the store
 
 var Result = React.createClass({
+  hello: function(e) {
+    e.preventDefault();
+    if (e.which === 13) {
+      this.props.secondFoo(this.props.index, e.target.value);
+    }
+  },
+  hi : function() {
+    console.log("because i have to provide change handler");
+    // this.props.obj.url = this.value;
+  },
   render: function() {
     return <tr className="Result">
       <td className="uri">
-        <label htmlFor="unique2">{this.props.obj.url}&nbsp;{this.props.index}&nbsp;{this.props.secondFoo(this.props.obj.url)}</label>
-        <input type="text" id="unique2" value={this.props.obj.url} onChange={SocialCountResults.foo}  />
+        <label htmlFor="unique2">{this.props.obj.url}&nbsp;{this.props.index}&nbsp;</label>
+        <input type="text" id="unique2" defaultValue={this.props.obj.url} onKeyPress={this.hello}  />
         <button className="btn" onClick={this.getData}>Go</button>
       </td>
       <td className="fb">{this.props.obj.Facebook.total_count}</td>

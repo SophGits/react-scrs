@@ -9,8 +9,8 @@ var SocialCountResults = React.createClass({
   handleChange: function( event ) {
     this.setState({ uri: event.target.value });
   },
-  foo: function () {
-    console.log("something");
+  foo: function (f) {
+    console.log("something: ", f);
   },
   getData: function(e) {
     e.preventDefault();
@@ -39,7 +39,7 @@ var SocialCountResults = React.createClass({
   render: function() {
     return (
       <tbody>
-        <ResultsList data={this.state.dataArray} />
+        <ResultsList data={this.state.dataArray} onFoo={this.foo} />
         <tr>
           <td className="uri">
             <label htmlFor="u2">{this.state.uri}</label>
@@ -60,9 +60,10 @@ var SocialCountResults = React.createClass({
 // render all results (in <tr></tr> nodes)
 var ResultsList = React.createClass({
   render: function() {
+      var that = this;
       var resultNodes = this.props.data.map(function(result, index) {
         return (
-          <Result obj={result} index={index} key={index} ></Result>
+          <Result obj={result} index={index} key={index} secondFoo={that.props.onFoo}></Result>
         );
       });
       return (
@@ -79,7 +80,7 @@ var Result = React.createClass({
   render: function() {
     return <tr className="Result">
       <td className="uri">
-        <label htmlFor="unique2">{this.props.obj.url}&nbsp;{this.props.index}</label>
+        <label htmlFor="unique2">{this.props.obj.url}&nbsp;{this.props.index}&nbsp;{this.props.secondFoo(this.props.obj.url)}</label>
         <input type="text" id="unique2" value={this.props.obj.url} onChange={SocialCountResults.foo}  />
         <button className="btn" onClick={this.getData}>Go</button>
       </td>

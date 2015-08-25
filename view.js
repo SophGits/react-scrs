@@ -79,7 +79,8 @@ var SocialCountResults = React.createClass({
          console.log( "results: ", data );
          // this.setState({ data: data })
 
-        var dataArray = this.state.dataArray.concat(data);
+        var dataArray = this.state.dataArray;
+        dataArray.push(data);
         this.setState({ dataArray: dataArray });
         // this.render();
        }.bind(this),
@@ -90,6 +91,12 @@ var SocialCountResults = React.createClass({
      });
 
   },
+  yo: function(e) {
+    if (e.which === 13) {
+      e.preventDefault();
+      // this.foo(this.state.dataArray.index, e.target.value);
+    } 
+  },
   render: function() {
     return (
       <tbody>
@@ -97,7 +104,7 @@ var SocialCountResults = React.createClass({
         <tr>
           <td className="uri">
             <label htmlFor="u2">{this.state.newData.url}</label>
-            <input type="text" id="u2" value={this.state.newData.url} onChange={this.handleChange}  />
+            <input type="text" id="u2" value={this.state.newData.url} onChange={this.handleChange} onKeyPress={this.yo}  />
             <button className="btn" onClick={this.getData}>Go</button>
           </td>
           <td className="fb"></td>
@@ -121,9 +128,9 @@ var ResultsList = React.createClass({
         );
       });
       return (
-        <span className="resultList">
+        <div className="resultList">
           {resultNodes}
-        </span>
+        </div>
       );
     }
 });
@@ -142,7 +149,8 @@ var Result = React.createClass({
     // this.props.obj.url = this.value;
   },
   render: function() {
-    return <tr className="Result">
+    return(
+    <tr className="Result">
       <td className="uri">
         <label htmlFor="unique2">{this.props.obj.url}&nbsp;{this.props.index}&nbsp;</label>
         <input type="text" id="unique2" defaultValue={this.props.obj.url} onKeyPress={this.hello}  />
@@ -151,7 +159,7 @@ var Result = React.createClass({
       <td className="fb">{this.props.obj.Facebook.total_count}</td>
       <td className="twitter">{this.props.obj.Twitter}</td>
       <td className="linkedin">{this.props.obj.LinkedIn}</td>
-    </tr>
+    </tr>)
   }
 });
 

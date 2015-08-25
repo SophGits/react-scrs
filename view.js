@@ -110,10 +110,10 @@ var ResultsList = React.createClass({
 
 var Result = React.createClass({
   hello: function(e) {
-    e.preventDefault();
     if (e.which === 13) {
+      e.preventDefault();
       this.props.secondFoo(this.props.index, e.target.value);
-    }
+    } 
   },
   hi : function() {
     console.log("because i have to provide change handler");

@@ -40,7 +40,7 @@ var SocialCountResults = React.createClass({
    $.ajax({
       url: 'https://cors-anywhere.herokuapp.com/zorg.builtvisible.com/tools/scrs/json',
       data: {
-        'api_key': '65b608cf38b638ea71cf4c9baad182ae',
+        'api_key': APIKEY,
         'url': uri
       },
       success: function( data ) {
@@ -62,7 +62,7 @@ var SocialCountResults = React.createClass({
     $.ajax({
        url: 'https://cors-anywhere.herokuapp.com/zorg.builtvisible.com/tools/scrs/json',
        data: {
-         'api_key': '65b608cf38b638ea71cf4c9baad182ae',
+         'api_key': APIKEY,
          'url': this.state.newData.url
        },
        success: function( data ) {
@@ -83,10 +83,7 @@ var SocialCountResults = React.createClass({
   },
   render: function() {
     return (
-      <tbody>
         <ResultsList data={this.state.dataArray} onFoo={this.foo} storedData={this} getdata={this.getData} />
-
-      </tbody>
     );
   }
 });
@@ -99,7 +96,6 @@ var ResultsList = React.createClass({
     /*
     e.preventDefault();
     */
-    debugger
     if (e.which === 13) {
       e.preventDefault();
       this.props.onFoo(this.props.index, e.target.value);

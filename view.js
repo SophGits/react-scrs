@@ -23,14 +23,20 @@ var SocialCountResults = React.createClass({
       ] // this could be data from a db
     };
   },
-  foo: function (index, uri) {
-    console.log("something: ", index, uri);
+  handleChange: function( event ) {
+    var wholeState = this.state;
+    wholeState.url = event.target.value;
+    // console.log(wholeState.url);
+    this.setState({ newData: wholeState });
+  },
+  foo: function (index, bar) {
+    console.log("something: ", index, bar);
 
     var currentArray = this.state.dataArray;
-    currentArray[index].url = uri;
+    currentArray[index].url = bar;
 
     this.setState({ dataArray: currentArray });
-    this.getDataFromExistingRecord(index, uri);
+    this.getDataFromExistingRecord(index, bar);
 
     console.log(this.state.dataArray);
     // do setState instead
@@ -81,72 +87,83 @@ var SocialCountResults = React.createClass({
      });
 
   },
-  render: function() {
-    return (
-        <ResultsList data={this.state.dataArray} onFoo={this.foo} storedData={this} getdata={this.getData} />
-    );
-  }
-});
-// above: render list of <tr> nodes, plus the editable one
-
-
-// render all results (in <tr></tr> nodes)
-var ResultsList = React.createClass({
    hello: function(e) {
     /*
     e.preventDefault();
     */
     if (e.which === 13) {
       e.preventDefault();
-      this.props.onFoo(this.props.index, e.target.value);
+      // this.props.onFoo(this.props.index, e.target.value);
     }
-  },
-  yo: function(e) {
-    if (e.which === 13) {
-      e.preventDefault();
-      // this.foo(this.state.dataArray.index, e.target.value);
-    }
-  },
-  handleChange: function( event ) {
-    var wholeState = this.props.storedData.state;
-    wholeState.url = event.target.value;
-    // console.log(wholeState.url);
-    this.props.storedData.setState({ newData: wholeState });
   },
   render: function() {
-      var that = this;
-      {/* stored data from props */}
-      var resultNodes = this.props.data.map(function(result, index) {
-        return (
-          <tr className="Result">
-            <td className="uri">
-              <label htmlFor="unique2">{result.url}&nbsp;{index}&nbsp;</label>
-              <input type="text" id="unique2" defaultValue={result.url} onKeyPress={this.hello}  />
-              <button className="btn" onClick={this.hello}>Gogo</button>
-            </td>
-            <td className="fb">{result.Facebook.total_count}</td>
-            <td className="twitter">{result.Twitter}</td>
-            <td className="linkedin">{result.LinkedIn}</td>
-          </tr>
-        );
-      });
-      return (
-        <div className="resultList">
-          {/* using blank data to render empty input box */}
-          <tr>
-            <td className="uri">
-              <label htmlFor="u2">{this.props.storedData.state.newData.url}</label>
-              <input type="text" id="u2" value={this.props.storedData.state.newData.url} onChange={this.handleChange} onKeyPress={this.yo}  />
-              <button className="btn" onClick={this.props.getdata}>Go</button>
-            </td>
-            <td className="fb"></td>
-            <td className="twitter">{this.props.storedData.state.newData.Twitter}</td>
-            <td className="linkedin">{this.props.storedData.state.newData.LinkedIn}</td>
-          </tr>
-          {resultNodes}
-        </div>
-      );
-    }
+    return (
+     <table>
+       <thead>
+         <tr>
+           <th>URI</th>
+           <th>fb</th>
+           <th>twitter</th>
+           <th>linkedin</th>
+         </tr>
+       </thead>
+
+       <tbody>
+         {
+           this.state.dataArray.map(function(result, index) {
+             return (
+               <Result
+                 obj={result}
+                 index={index}
+                 key={index}/>
+             )
+           }, this)
+         }
+
+         <tr>
+           <td className="uri">
+             <label htmlFor="u2">{this.state.newData.url}</label>
+             <input
+               id="u2"
+               onChange={this.handleChange}
+               onKeyPress={this.hello}
+               type="text"
+               value={this.state.newData.url}
+             />
+             <button
+               className="btn"
+               onClick={this.getData}
+             >
+               Go
+             </button>
+           </td>
+           <td className="fb"></td>
+           <td className="twitter">{this.state.newData.Twitter}</td>
+           <td className="linkedin">{this.state.newData.LinkedIn}</td>
+         </tr>
+       </tbody>
+     </table>
+    );
+  }
+});
+// above: render list of <tr> nodes, plus the editable one
+
+
+var Result = React.createClass({
+  render: function() {
+    return (
+      <tr className="Result">
+        <td className="uri">
+          <label htmlFor="u2">{this.props.obj.url}&nbsp;{this.props.index}</label>
+          <input type="text" id="u2" value={this.props.obj.url} onChange={this.hello} onKeyPress={this.handleChange}  />
+          <button className="btn" onClick={this.getData}>Go</button>
+        </td>
+        <td className="fb">{this.props.obj.Facebook.total_count}</td>
+        <td className="twitter">{this.props.obj.Twitter}</td>
+        <td className="linkedin">{this.props.obj.LinkedIn}</td>
+      </tr>
+    );
+  }
 });
 
 
